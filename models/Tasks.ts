@@ -2,8 +2,14 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
+interface ITask {
+    user: mongoose.Schema.Types.ObjectId;
+    title: string;
+    description?: string;
+    status: 'new' | 'in_progress' | 'complete';
+}
 
-const TaskSchema = new Schema({
+const TaskSchema = new Schema<ITask>({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -23,5 +29,5 @@ const TaskSchema = new Schema({
     }
 })
 
-
-export default TaskSchema;
+const Task = mongoose.model('Task' , TaskSchema);
+export default Task;
