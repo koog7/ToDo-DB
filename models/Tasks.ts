@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-interface ITask {
+export interface ITask {
     user: mongoose.Schema.Types.ObjectId;
     title: string;
     description?: string;

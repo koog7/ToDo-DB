@@ -4,7 +4,13 @@ const Schema = mongoose.Schema;
 
 const SALT_WORK_FACTOR = 10;
 
-const UsersSchema = new Schema({
+export interface IUser{
+    username: string;
+    password: string;
+    token?: string;
+}
+
+const UsersSchema = new Schema<IUser>({
     username: {
         type: String,
         required: true,
