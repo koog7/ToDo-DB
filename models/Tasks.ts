@@ -13,8 +13,6 @@ const TaskSchema = new Schema<ITask>({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        unique: true,
-        required: true
     },
     title: {
         type: String,
@@ -28,7 +26,8 @@ const TaskSchema = new Schema<ITask>({
         enum: ['new', 'in_progress', 'complete'],
         default: 'new',
     }
-})
+});
+
 
 const Task = mongoose.model('Task' , TaskSchema);
 export default Task;
