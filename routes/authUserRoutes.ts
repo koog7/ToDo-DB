@@ -2,7 +2,7 @@ import express from "express";
 import {randomUUID} from "crypto";
 import User from "../models/Users";
 import mongoose from "mongoose";
-import auth, {ModificatedRequest} from "../middleware/auth";
+import auth, {RequestWithUser} from "../middleware/auth";
 
 const authUserRouter = express.Router();
 authUserRouter.use(express.json());
@@ -25,7 +25,7 @@ authUserRouter.post('/',  async (req , res, next) =>{
     }
 })
 
-authUserRouter.post('/sessions', auth , async (req: ModificatedRequest, res, next) =>{
+authUserRouter.post('/sessions', auth , async (req: RequestWithUser, res, next) =>{
     try {
         const user = req.user;
 

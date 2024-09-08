@@ -4,11 +4,15 @@ import {randomUUID} from "crypto";
 import {NextFunction, Request, Response} from 'express';
 
 
-export interface ModificatedRequest extends Request{
-    user: IUser;
+// export interface ModificatedRequest extends Request{
+//     user: IUser;
+// }
+
+export interface RequestWithUser extends Request {
+    user?: IUser;
 }
 
-const auth = async (req: ModificatedRequest , res: Response , next: NextFunction) => {
+const auth = async (req: RequestWithUser , res: Response , next: NextFunction) => {
     try{
         const user = await User.findOne({username: req.body.username})
 

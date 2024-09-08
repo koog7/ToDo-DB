@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from "mongoose";
-import authUserRouter from "./routes/authUser";
+import authUserRouter from "./routes/authUserRoutes";
 
 const app = express();
 const port = 8000;
