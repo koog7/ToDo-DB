@@ -67,4 +67,40 @@ tasksRouter.post('/'  , async (req , res, next) => {
 });
 
 
+tasksRouter.delete('/:id'  , async (req , res, next) => {
+    try{
+        const getToken = req.get('Authorization');
+        const {id} = req.params;
+
+        if(!getToken){
+            return res.status(400).send({error: 'Provide token'})
+        }
+
+        const findPerson = await User.findOne({token:getToken})
+
+        if (!findPerson) {
+            return res.status(404).send({ error: 'User not found' });
+        }
+
+        const getTask = await Task.findById(id)
+
+        if(!getTask){
+            return res.status(400).send({ error: 'Task not found' });
+        }
+
+        if (getTask.user.toString() === findPerson._id.toString()) {
+            await Task.findByIdAndDelete(id);
+            res.send({success: 'Success delete'});
+        }else{
+            res.status(403).send({error: 'You cant delete not your task'});
+        }
+    }catch (e) {
+        if(e instanceof mongoose.Error.ValidationError){
+            return res.status(400).send(e)
+        }
+        return next(e)
+    }
+});
+
+
 export default tasksRouter
