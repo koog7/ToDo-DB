@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const SALT_WORK_FACTOR = 10;
 
 export interface IUser{
+    _id?: string,
     username: string;
     password: string;
     token?: string;

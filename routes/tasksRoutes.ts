@@ -2,6 +2,8 @@ import express from "express";
 import User from "../models/Users";
 import Task from "../models/Tasks";
 import mongoose from "mongoose";
+import {RequestWithUser} from "../middleware/auth";
+import findByToken from "../middleware/findByToken";
 
 const tasksRouter = express.Router();
 tasksRouter.use(express.json());
@@ -67,19 +69,13 @@ tasksRouter.post('/'  , async (req , res, next) => {
 });
 
 
-tasksRouter.delete('/:id'  , async (req , res, next) => {
+tasksRouter.delete('/:id', findByToken  , async (req : RequestWithUser, res, next) => {
     try{
-        const getToken = req.get('Authorization');
         const {id} = req.params;
+        const findPerson = req.user;
 
-        if(!getToken){
-            return res.status(400).send({error: 'Provide token'})
-        }
-
-        const findPerson = await User.findOne({token:getToken})
-
-        if (!findPerson) {
-            return res.status(404).send({ error: 'User not found' });
+        if(!findPerson || !findPerson._id){
+            return res.status(400).send({ error: 'User not found' });
         }
 
         const getTask = await Task.findById(id)
@@ -129,7 +125,8 @@ tasksRouter.put('/:id'  , async (req , res, next) => {
 
         if (getTask.user.toString() === findPerson._id.toString()) {
             await Task.findByIdAndUpdate(id , { $set: updateData });
-            res.send(updateData);
+            const updatedTask = await Task.find({_id: id})
+            res.send(updatedTask);
         }else{
             res.status(403).send({error: 'You cant update not your task'});
         }
