@@ -9,18 +9,12 @@ const tasksRouter = express.Router();
 tasksRouter.use(express.json());
 
 
-tasksRouter.get('/' , async (req , res , next) =>{
+tasksRouter.get('/', findByToken , async (req: RequestWithUser , res , next) =>{
     try{
-        const getToken = req.get('Authorization');
+        const findPerson = req.user;
 
-        if(!getToken){
-            return res.status(400).send({error: 'Provide token'})
-        }
-
-        const findPerson = await User.findOne({token:getToken})
-
-        if (!findPerson) {
-            return res.status(404).send({ error: 'User not found' });
+        if(!findPerson || !findPerson._id){
+            return res.status(400).send({ error: 'User not found' });
         }
 
         const allTask = await Task.find({user: findPerson._id})
@@ -34,22 +28,19 @@ tasksRouter.get('/' , async (req , res , next) =>{
     }
 })
 
-tasksRouter.post('/'  , async (req , res, next) => {
+tasksRouter.post('/', findByToken, async (req : RequestWithUser, res, next) => {
     try{
-        const getToken = req.get('Authorization');
+        const findPerson = req.user;
 
-        if(!getToken){
-            return res.status(400).send({error: 'Provide token'})
-        }
-
-        const findPerson = await User.findOne({token:getToken})
-
-        if (!findPerson) {
-            return res.status(404).send({ error: 'User not found' });
+        if(!findPerson || !findPerson._id){
+            return res.status(400).send({ error: 'User not found' });
         }
 
         if(!req.body.title){
             res.status(400).send({error: 'Title are empty'})
+        }
+        if(!req.body.status){
+            res.status(400).send({error: 'Status are empty'})
         }
         const newTask = new Task({
             user: findPerson._id,
@@ -99,23 +90,16 @@ tasksRouter.delete('/:id', findByToken  , async (req : RequestWithUser, res, nex
 });
 
 
-tasksRouter.put('/:id'  , async (req , res, next) => {
+tasksRouter.put('/:id', findByToken  , async (req: RequestWithUser , res, next) => {
     try{
-        const getToken = req.get('Authorization');
         const {id} = req.params;
+        const findPerson = req.user;
 
-        if(!getToken){
-            return res.status(400).send({error: 'Provide token'})
+        if(!findPerson || !findPerson._id){
+            return res.status(400).send({ error: 'User not found' });
         }
 
         const updateData = req.body;
-
-
-        const findPerson = await User.findOne({token:getToken})
-
-        if (!findPerson) {
-            return res.status(404).send({ error: 'User not found' });
-        }
 
         const getTask = await Task.findById(id)
 
