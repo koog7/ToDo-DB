@@ -9,13 +9,20 @@ authUserRouter.use(express.json());
 
 authUserRouter.post('/',  async (req , res, next) =>{
     try {
+
+        const existingUser = await User.findOne({ username: req.body.username });
+        if (existingUser) {
+            return res.status(400).send({error: 'Username claimed'});
+        }
+
         const user = new User({
             username: req.body.username,
             password: req.body.password,
             token: randomUUID(),
         })
 
-        await user.save()
+
+        const saveUser = await user.save()
         res.send(user)
     }catch (e) {
         if(e instanceof mongoose.Error.ValidationError){

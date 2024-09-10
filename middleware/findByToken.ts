@@ -10,8 +10,8 @@ const findByToken = async (req: RequestWithUser, res: Response, next: NextFuncti
         if (!getToken) {
             return res.status(400).send({ error: 'Provide token' });
         }
-
-        const findPerson = await User.findOne({ token: getToken });
+        const [_Bearer , token] = getToken.split(' ');
+        const findPerson = await User.findOne({ token: token });
 
         if (!findPerson) {
             return res.status(404).send({ error: 'User not found' });
