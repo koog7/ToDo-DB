@@ -22,7 +22,7 @@ authUserRouter.post('/',  async (req , res, next) =>{
         })
 
 
-        const saveUser = await user.save()
+        await user.save()
         res.send(user)
     }catch (e) {
         if(e instanceof mongoose.Error.ValidationError){

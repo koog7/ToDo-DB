@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import {randomUUID} from "crypto";
 import {NextFunction, Request, Response} from 'express';
 
-// noinspection JSAnnotator
+
 export interface RequestWithUser extends Request {
     user?: IUser;
 }
