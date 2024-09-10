@@ -10,7 +10,14 @@ authUserRouter.use(express.json());
 authUserRouter.post('/',  async (req , res, next) =>{
     try {
 
+        const {password} = req.body;
+
+        if (!password || password.trim() === '') {
+            return res.status(400).send({ error: 'Password is required' });
+        }
+
         const existingUser = await User.findOne({ username: req.body.username });
+
         if (existingUser) {
             return res.status(400).send({error: 'Username claimed'});
         }
